@@ -1,5 +1,5 @@
 const { Logger } = require("../config/index");
-const AppError = require("../utils/errors/apperror");
+const AppError = require("../utils/errors/app-error");
 const { StatusCodes } = require("http-status-codes");
 class CrudRepository {
   constructor(model) {
@@ -7,6 +7,7 @@ class CrudRepository {
   }
 
   async create(data) {
+    console.log("hellowckepocmpoewjmcpoewjpo");
     console.log(":this is the data");
     console.log(data);
     const response = await this.model.create(data);
