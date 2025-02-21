@@ -17,6 +17,20 @@ const creatBooking = async (req, res) => {
   }
 };
 
+const getBookingsByEmail = async (req, res) => {
+  try {
+    const resp = await BookingService.getBookingsByEmail(req.user.email);
+    SuccessMessage.data = resp;
+
+    return res.status(StatusCodes.OK).json(SuccessMessage);
+  } catch (err) {
+    ErrorMessage.error = new AppError(err.explanation, err.statusCode);
+    console.log(err);
+    return res.status(err.statusCode).json(ErrorMessage);
+  }
+};
+
 module.exports = {
   creatBooking,
+  getBookingsByEmail,
 };

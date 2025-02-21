@@ -73,7 +73,7 @@ const waitForConfirmation = async (bookingId, timeout = 30000) => {
   );
 };
 
-const createBooking = async ({ flightId, userId, noofSeats }) => {
+const createBooking = async ({ flightId, userEmail, noofSeats }) => {
   try {
     const resp = await axios.get(`${FLIGHT_URL}/flights/${flightId}`);
 
@@ -94,13 +94,13 @@ const createBooking = async ({ flightId, userId, noofSeats }) => {
       );
     }
     console.log(flight);
-    console.log(flightId, userId, noofSeats);
+    console.log(flightId, userEmail, noofSeats);
     console.log("hello");
     const totalCosts = flight.price * noofSeats;
     console.log(totalCosts);
     const book = await booking.create({
       flightId,
-      userId,
+      userEmail,
       noofSeats,
       totalCosts,
       status: INITIATED,
@@ -110,7 +110,7 @@ const createBooking = async ({ flightId, userId, noofSeats }) => {
     await sendBookingEvent({
       bookingId: book.id,
       flightId,
-      userId,
+      userEmail,
       noofSeats,
       totalCosts,
       status: INITIATED,
@@ -120,7 +120,7 @@ const createBooking = async ({ flightId, userId, noofSeats }) => {
 
     return { body: "Booking successfully done ", status };
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw new AppError(
       err.explanation ||
         "Something went wrong while trying to make the booking ",
@@ -129,4 +129,17 @@ const createBooking = async ({ flightId, userId, noofSeats }) => {
   }
 };
 
-module.exports = { createBooking };
+const getBookingsByEmail = async (email) => {
+  try {
+    const resp = await booking.getBookingsByEmail(email);
+    return resp;
+  } catch (err) {
+    console.log(err);
+    throw new AppError(
+      err.explanation || "There was some issue in retrieving the bookings",
+      StatusCodes.INTERNAL_SERVER_ERROR
+    );
+  }
+};
+
+module.exports = { createBooking, getBookingsByEmail };
